@@ -1,0 +1,5 @@
+tensorflow==2.18.*
+numpy
+matplotlib
+pandas
+Pillow

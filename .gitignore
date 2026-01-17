@@ -1,0 +1,96 @@
+# ============================================================
+# DATA (never commit actual data, keep folder structure)
+# ============================================================
+
+data/**
+!data/.gitkeep
+
+!data/images/
+data/images/*
+!data/images/.gitkeep
+
+!data/masks/
+data/masks/*
+!data/masks/.gitkeep
+
+!data/stacks/
+data/stacks/*
+!data/stacks/.gitkeep
+
+!data/ORIGA/
+!data/ORIGA/.gitkeep
+
+!data/ORIGA/images/
+data/ORIGA/images/*
+!data/ORIGA/images/.gitkeep
+
+!data/ORIGA/masks/
+data/ORIGA/masks/*
+!data/ORIGA/masks/.gitkeep
+
+
+# ============================================================
+# TRAINING OUTPUTS (runs, checkpoints)
+# ============================================================
+
+runs/**
+!runs/.gitkeep
+
+!runs/*/
+runs/*/*
+!runs/*/.gitkeep
+
+checkpoints/**git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+
+# ============================================================
+# PREPROCESSING (hide for now)
+# ============================================================
+
+src/preprocess/**
+
+
+# ============================================================
+# MODEL FILES / WEIGHTS
+# ============================================================
+
+*.h5
+*.ckpt
+*.pb
+
+
+# ============================================================
+# PYTHON / BUILD ARTIFACTS
+# ============================================================
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+
+
+# ============================================================
+# VIRTUAL ENVIRONMENTS
+# ============================================================
+
+.venv/
+venv/
+
+
+# ============================================================
+# JUPYTER
+# ============================================================
+
+.ipynb_checkpoints/
+
+
+# ============================================================
+# OS FILES
+# ============================================================
+
+.DS_Store
+Thumbs.db
