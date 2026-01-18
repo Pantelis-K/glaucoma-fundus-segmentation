@@ -1,96 +1,38 @@
-# ============================================================
-# DATA (never commit actual data, keep folder structure)
-# ============================================================
-
-data/**
-!data/.gitkeep
-
-!data/images/
-data/images/*
-!data/images/.gitkeep
-
-!data/masks/
-data/masks/*
-!data/masks/.gitkeep
-
-!data/stacks/
-data/stacks/*
-!data/stacks/.gitkeep
-
-!data/ORIGA/
-!data/ORIGA/.gitkeep
-
-!data/ORIGA/images/
-data/ORIGA/images/*
-!data/ORIGA/images/.gitkeep
-
-!data/ORIGA/masks/
-data/ORIGA/masks/*
-!data/ORIGA/masks/.gitkeep
-
-
-# ============================================================
-# TRAINING OUTPUTS (runs, checkpoints)
-# ============================================================
-
-runs/**
-!runs/.gitkeep
-
-!runs/*/
-runs/*/*
-!runs/*/.gitkeep
-
-checkpoints/**git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-
-
-# ============================================================
-# PREPROCESSING (hide for now)
-# ============================================================
-
-src/preprocess/**
-
-
-# ============================================================
-# MODEL FILES / WEIGHTS
-# ============================================================
-
-*.h5
-*.ckpt
-*.pb
-
-
-# ============================================================
-# PYTHON / BUILD ARTIFACTS
-# ============================================================
-
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-build/
-dist/
-
-
-# ============================================================
-# VIRTUAL ENVIRONMENTS
-# ============================================================
-
+# --- Virtual environments ---
 .venv/
 venv/
 
+# --- Python cache / build ---
+__pycache__/
+*.py[cod]
+*.pyd
 
-# ============================================================
-# JUPYTER
-# ============================================================
-
+# --- Jupyter ---
 .ipynb_checkpoints/
 
-
-# ============================================================
-# OS FILES
-# ============================================================
-
+# --- OS / editor ---
 .DS_Store
 Thumbs.db
+.vscode/
+
+# --- Ignore model weights everywhere ---
+*.h5
+*.keras
+saved_model/
+
+# --- Runs: keep curves + CSV, ignore checkpoints/weights ---
+runs/**/checkpoints/
+!runs/**/.gitkeep
+!runs/**/training_history.csv
+!runs/**/training_curves.png
+
+# --- Root checkpoints folder: keep placeholder only ---
+checkpoints/*
+!checkpoints/.gitkeep
+
+# --- Preprocess scripts (not publishing yet) ---
+src/preprocess/*
+!src/preprocess/.gitkeep
+
+
+

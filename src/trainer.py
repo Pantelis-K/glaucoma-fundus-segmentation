@@ -10,12 +10,13 @@ import metrics
 from model import build_UNET
 
 # Config -----------------------------------------------------
-cup_or_disc = "cup"
+cup_or_disc = "disc"
 IMAGE_SIZE   = 256           
 N_CHANNELS   = 5            # R, G, B, CLAHE‑gray, Sobel
 BATCH_SIZE   = 4
 AUTOTUNE     = tf.data.AUTOTUNE
 CUP_VALUE = 2 # pixel value for cup in mask
+EPOCHS_TO_SAVE = [1, 5] # [1, 5, 10, 20, 50, 100]
 
 #Directories -----------------------------------------------------
 # Resolve project root (without assuming cwd) 
@@ -35,8 +36,9 @@ ckpt_dir.mkdir(parents=True, exist_ok=True)
 
 
 # Load dataset paths ---------------------------------------------------
-stack_paths = sorted(STACK_DIR.glob("*_stack.npy"))
-mask_paths  = sorted(MASK_DIR.glob("*.png"))
+stack_paths = [str(p) for p in sorted(STACK_DIR.glob("*_stack.npy"))]
+mask_paths  = [str(p) for p in sorted(MASK_DIR.glob("*.png"))]
+
 assert len(stack_paths) == len(mask_paths), "Stacks / masks count mismatch!"
 print(f"{len(stack_paths)} paired samples found")
 
@@ -46,13 +48,17 @@ print(f"{len(stack_paths)} paired samples found")
 # function defintions -----------------------------------------------------
 
 def load_stack(path):
-    st = np.load(path.numpy().decode()).astype(np.float32)
+    p = path.numpy()
+    p = p.decode() if isinstance(p, (bytes, bytearray)) else p
+    st = np.load(p).astype(np.float32)
     st = st[..., :N_CHANNELS]                     # RGB + CLAHE + Sobel
     st = tf.image.resize(st, (IMAGE_SIZE, IMAGE_SIZE))
     return st / 127.5 - 1.0                  # [-1,1]
 
 def load_mask(path):
-    img_raw = tf.io.read_file(path)
+    p = path.numpy()
+    p = p.decode() if isinstance(p, (bytes, bytearray)) else p
+    img_raw = tf.io.read_file(p)
     mask    = tf.io.decode_png(img_raw, channels=1)        # (H,W,1), uint8
     mask  = tf.image.resize(mask, (IMAGE_SIZE, IMAGE_SIZE), method='nearest')
     # cast to binary (0/1)
@@ -129,8 +135,6 @@ LR = 1e-4
 ALPHA, BETA = 0.5, 0.5
 MONITOR = "val_dice_coef"  # from custom metrics
 MODE = "max"
-
-EPOCHS_TO_SAVE = [1, 5, 10, 20, 50, 100]
 MAX_EPOCHS = max(EPOCHS_TO_SAVE)
 
 
