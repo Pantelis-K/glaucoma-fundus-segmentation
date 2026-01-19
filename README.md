@@ -1,6 +1,6 @@
 # Glaucoma Fundus Segmentation and Analysis (U-Net) — ORIGA
 
-This repository contains code for a dissertation project on optic disc and optic cup segmentation from retinal fundus images using a U-Net architecture. The resulting segmentations are used to derive geometric features such as the Cup-to-Disc Ratio (CDR), which is commonly used in glaucoma screening.
+This repository contains code for my dissertation project on optic disc and optic cup segmentation from retinal fundus images using a U-Net architecture. The resulting segmentations are used to derive geometric features such as the Cup-to-Disc Ratio (CDR), which is commonly used in glaucoma screening. (Currently a work in progress as I refactor the code to be suited for demo-ing and push it to GitHub)
 
 The work is based on the ORIGA (Online Retinal Fundus Image Database for Glaucoma Analysis) public dataset.
 
