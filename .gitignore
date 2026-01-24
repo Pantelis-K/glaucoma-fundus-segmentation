@@ -35,4 +35,22 @@ src/preprocess/*
 !src/preprocess/.gitkeep
 
 
+# --- ORIGA (default: ignore raw dataset) ---
+data/ORIGA/**
+
+# Allow the specific sample subset (621–650) to be committed
+!data/ORIGA/images/
+!data/ORIGA/images/62[1-9].jpg
+!data/ORIGA/images/63[0-9].jpg
+!data/ORIGA/images/64[0-9].jpg
+!data/ORIGA/images/650.jpg
+
+!data/ORIGA/masks/
+!data/ORIGA/masks/62[1-9].png
+!data/ORIGA/masks/63[0-9].png
+!data/ORIGA/masks/64[0-9].png
+!data/ORIGA/masks/650.png
+
+# Allow ORIGA labels CSV 
+!data/ORIGA/origa_info.csv
 

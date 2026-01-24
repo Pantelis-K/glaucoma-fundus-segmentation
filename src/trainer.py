@@ -1,30 +1,5 @@
 
 # Imports -----------------------------------------------------
-"""
-Glaucoma Fundus Segmentation - Model Trainer
-A comprehensive training pipeline for a U-Net segmentation model designed to 
-segment either the optic cup or optic disc from multi-channel fundus images.
-The pipeline includes:
-- Data loading and preprocessing (5-channel stacks: RGB + CLAHE-gray + Sobel)
-- Data augmentation (random flips, brightness jitter)
-- 80/10/10 train/validation/test split
-- Model compilation with custom loss and metrics
-- Training with adaptive learning rate scheduling and early stopping
-- Results logging and visualization
-Configuration:
-- Target: Optic disc or cup segmentation
-- Input: 256x256 multi-channel fundus images
-- Model: U-Net architecture
-- Learning rate: 1e-4 (adaptive via ReduceLROnPlateau)
-Key features:
-- Dynamic learning rate reduction on validation loss plateau
-- Early stopping with best model restoration
-- Selective checkpoint saving at specified epochs
-- Training history visualization and CSV export
-The ReduceLROnPlateau callback reduces the learning rate by a factor of 0.5 
-when validation loss plateaus for 4 consecutive epochs, helping the model 
-escape local minima and achieve better convergence during training.
-"""
 import tensorflow as tf
 import numpy as np
 from pathlib import Path
