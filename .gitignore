@@ -30,11 +30,6 @@ runs/**/checkpoints/
 checkpoints/*
 !checkpoints/.gitkeep
 
-# --- Preprocess scripts (not publishing yet) ---
-src/preprocess/*
-!src/preprocess/.gitkeep
-
-
 # --- ORIGA (default: ignore raw dataset) ---
 data/ORIGA/**
 
