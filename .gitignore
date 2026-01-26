@@ -49,3 +49,42 @@ data/ORIGA/**
 # Allow ORIGA labels CSV 
 !data/ORIGA/origa_info.csv
 
+# --- Jitter-cropped images (default ignore) ---
+data/images/**
+
+# Allow sample subset (621–650)
+!data/images/
+!data/images/62[1-9].png
+!data/images/63[0-9].png
+!data/images/64[0-9].png
+!data/images/650.png
+
+# --- Jitter-cropped masks (default ignore) ---
+data/masks/**
+
+# Allow sample subset (621–650)
+!data/masks/
+!data/masks/62[1-9].png
+!data/masks/63[0-9].png
+!data/masks/64[0-9].png
+!data/masks/650.png
+
+# --- Precomputed stacks (default ignore) ---
+data/stacks/**
+
+# Allow sample subset (621–650)
+!data/stacks/
+!data/stacks/62[1-9]_stack.npy
+!data/stacks/63[0-9]_stack.npy
+!data/stacks/64[0-9]_stack.npy
+!data/stacks/650_stack.npy
+
+!data/stacks/62[1-9]_clahe.png
+!data/stacks/63[0-9]_clahe.png
+!data/stacks/64[0-9]_clahe.png
+!data/stacks/650_clahe.png
+
+!data/stacks/62[1-9]_sobel.png
+!data/stacks/63[0-9]_sobel.png
+!data/stacks/64[0-9]_sobel.png
+!data/stacks/650_sobel.png

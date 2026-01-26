@@ -48,12 +48,12 @@ for img_path in img_files:
         print(f"[SKIP] Could not read image: {img_path.name}")
         continue
 
-    # Convert to RGB and grayscale
+    # Convert to RGB, grayscale and HSV
     rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)          # (H,W,3), uint8
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)        # (H,W), uint8
-
-    # CLAHE on grayscale
-    clahe_gray = clahe.apply(gray) # (H,W), uint8                      
+    
+    # clahe on grayscale
+    clahe_gray = clahe.apply(gray) # (H,W), uint8
 
     # Sobel magnitude on grayscale (then normalise to 0..255)
     gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=SOBEL_KSIZE) # (H,W), float32
@@ -72,6 +72,14 @@ for img_path in img_files:
     # Save as .npy
     out_path = out_stack_dir / f"{base_name}_stack.npy"
     np.save(out_path, stack)
+
+    # Save CLAHE as PNG
+    clahe_path = out_stack_dir / f"{base_name}_clahe.png"
+    cv2.imwrite(str(clahe_path), clahe_gray)
+
+    # Save Sobel as PNG
+    sobel_path = out_stack_dir / f"{base_name}_sobel.png"
+    cv2.imwrite(str(sobel_path), sobel_mag)
 
     print(f"Saved stack: {out_path.name}  shape={stack.shape} dtype={stack.dtype}")
 

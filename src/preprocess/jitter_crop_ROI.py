@@ -30,7 +30,7 @@ therefore suitable for real-world deployment.
 
 #imports
 import os
-from zipfile import Path
+from pathlib import Path
 import numpy as np
 from PIL import Image
 
