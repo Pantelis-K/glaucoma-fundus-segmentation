@@ -10,16 +10,18 @@ This project uses the ORIGA dataset:
 - Source: https://ieeexplore.ieee.org/document/5626137/  
 - Access: The dataset can be requested from the original authors  
 
-Only a small sample of the dataset is committed in this repository.
+Only a small sample of the dataset is committed in this repository. (30 out of 650)
 
 ## Folder Structure
+```
 data/
-├── ORIGA/ # Raw ORIGA dataset
-│ ├── images/ # Original fundus images
-│ └── masks/ # Original annotation masks (single mask with multiple labels)
-├── images/ # Cropped fundus images
-├── masks/ # Cropped segmentation masks
-└── stacks/ # Multi-channel input stacks (.npy) + visualisation layers
+	ORIGA/            # Raw ORIGA dataset
+		images/       # Original fundus images
+		masks/        # Original annotation masks (single mask with multiple labels)
+	images/           # Cropped fundus images
+	masks/            # Cropped segmentation masks
+	stacks/           # Multi-channel input stacks (.npy) + visualisation layers
+```
 
 ## Data Generation
 
