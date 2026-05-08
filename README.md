@@ -99,5 +99,3 @@ Full dataset access can be requested from the original publication:
 https://ieeexplore.ieee.org/document/5626137/
 
 Training outputs and large files are excluded from version control.
-
-Currently a work in progress as I refactor the code to be suited for demonstration and prepare it for GitHub release.
