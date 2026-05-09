@@ -1,5 +1,6 @@
 
 # Imports -----------------------------------------------------
+import argparse
 import tensorflow as tf
 import numpy as np
 from pathlib import Path
@@ -9,14 +10,29 @@ import pandas as pd
 import metrics
 from model import build_UNET
 
+
+# Target selection -----------------------------------------------------
+def _parse_target() -> str:
+    parser = argparse.ArgumentParser(description="Train U-Net for optic disc or cup segmentation.")
+    parser.add_argument("--target", choices=["disc", "cup"], help="Which structure to segment.")
+    args, _ = parser.parse_known_args()
+    if args.target:
+        return args.target
+    while True:
+        choice = input("Train disc or cup model? [disc/cup]: ").strip().lower()
+        if choice in ("disc", "cup"):
+            return choice
+        print("  Invalid input. Please enter 'disc' or 'cup'.")
+
+cup_or_disc = _parse_target()
+
 # Config -----------------------------------------------------
-cup_or_disc = "disc"
 IMAGE_SIZE   = 256           
 N_CHANNELS   = 5            # R, G, B, CLAHE‑gray, Sobel
 BATCH_SIZE   = 4
 AUTOTUNE     = tf.data.AUTOTUNE
 CUP_VALUE = 2 # pixel value for cup in mask
-EPOCHS_TO_SAVE = [1, 5] # [1, 5, 10, 20, 50, 100]
+EPOCHS_TO_SAVE = [1, 20, 50, 100]
 
 #Directories -----------------------------------------------------
 # Resolve project root (without assuming cwd) 
@@ -145,9 +161,8 @@ model.compile(
     loss=metrics.log_dice_loss,                  
     metrics=[metrics.dice_coef,
              metrics.boundary_loss,
-             metrics.combined_dice_boundary_loss(alpha=ALPHA,beta=BETA),
              metrics.iou,
-             tf.keras.metrics.BinaryAccuracy()] 
+             tf.keras.metrics.BinaryAccuracy()]
 )
 #callbacks -----------------------------------------------------
 class SaveEpochs(tf.keras.callbacks.Callback):
@@ -171,7 +186,7 @@ save_epochs_cb = SaveEpochs(
 )
 
 best_ckpt_cb = tf.keras.callbacks.ModelCheckpoint(
-    filepath=str(ckpt_dir / "best.h5"),
+    filepath=str(run_dir / "best.h5"),
     monitor=MONITOR,
     mode=MODE,
     save_best_only=True,
@@ -223,15 +238,14 @@ plt.plot(epochs_ran, history.history["loss"],     label="Loss")
 plt.plot(epochs_ran, history.history["val_loss"], label="Val Loss")
 plt.xlabel("Epoch"); plt.ylabel("Loss"); plt.legend(); plt.grid(True)
 plt.suptitle("Training history"); plt.tight_layout();
-plot_path = run_dir / "training_curves.png"
-plt.savefig(plot_path, dpi=200, bbox_inches="tight")
-print(f"Training curves saved to: {plot_path}")
-plt.show()
-
-
 # save training history as CSV -----------------------------------------------------
 hist_df = pd.DataFrame(history.history)
 hist_df.insert(0, "epoch", range(1, len(hist_df) + 1))   # 1‑based epoch column
 out_path = run_dir / "training_history.csv"
 hist_df.to_csv(out_path, index=False)
 print(f"Training history saved to: {out_path}")
+
+plot_path = run_dir / "training_curves.png"
+plt.savefig(plot_path, dpi=200, bbox_inches="tight")
+print(f"Training curves saved to: {plot_path}")
+plt.show()

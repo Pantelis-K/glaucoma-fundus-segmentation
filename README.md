@@ -26,6 +26,10 @@ This project introduces an analytical formulation of the model-invariant error a
 
 This defines a fundamental lower bound on the achievable precision of Cup-to-Disc Ratio (CDR) estimation — establishing a performance ceiling that is independent of segmentation model quality and addressing a gap in the existing literature.
 
+![CDR error bounds at 512px](assets/512_bounds.png)
+
+*CDR estimation error induced purely by resizing to 512px, plotted against optic disc height (px). Each point is the absolute difference between the CDR computed on the original image and the CDR recomputed after downsampling — no model involved. The worst-case analytical bound (derived in closed form) captured 100% of empirical errors; the approximated worst-case bound captured 98.31%, confirming that the theoretical bounds are tight and empirically valid.*
+
 ## Pipeline
 
 ### Offline Preprocessing and Cropping
@@ -90,6 +94,43 @@ src/                          # Main source code
   model.py                    # U-Net architecture
   trainer.py                  # Training pipeline
 ```
+
+## Training
+
+### 1. Preprocess (one-time setup)
+
+Skip this step if `data/images/`, `data/masks/`, and `data/stacks/` are already populated.
+
+**Crop images to the optic disc region of interest:**
+```bash
+python src/preprocess/jitter_crop_ROI.py
+```
+Outputs paired crops to `data/images/` and `data/masks/`.
+
+**Build multi-channel input stacks:**
+```bash
+python src/preprocess/create_stacks.py
+```
+Outputs 5-channel `.npy` stacks to `data/stacks/`.
+
+### 2. Train
+
+Train separately for disc and cup. Run twice, once per target:
+```bash
+python src/trainer.py --target disc
+python src/trainer.py --target cup
+```
+
+Running without `--target` will prompt interactively.
+
+**Outputs** (saved to `runs/<target>_256_unet/`):
+
+| File | Description |
+|---|---|
+| `checkpoints/best.h5` | Best weights by validation DICE |
+| `checkpoints/epoch{N}.h5` | Periodic checkpoints at configured epochs |
+| `training_history.csv` | Per-epoch metrics |
+| `training_curves.png` | Loss and DICE plots |
 
 ## Notes
 

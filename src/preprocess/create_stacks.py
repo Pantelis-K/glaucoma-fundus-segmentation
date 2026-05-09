@@ -38,80 +38,39 @@ clahe = cv2.createCLAHE(
     tileGridSize=(TILE_GRID, TILE_GRID),
 )
 
-def process_image(img_path):    
-
-    # Read image (OpenCV loads BGR)
+def process_image(img_path):
     bgr = cv2.imread(str(img_path), cv2.IMREAD_COLOR)
     if bgr is None:
         print(f"[SKIP] Could not read image: {img_path.name}")
-        return None, None
+        return None
 
-    # Convert to RGB, grayscale and HSV
-    rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)          # (H,W,3), uint8
-    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)        # (H,W), uint8
-    
-    # clahe on grayscale
-    clahe_gray = clahe.apply(gray) # (H,W), uint8
+    rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
+    clahe_gray = clahe.apply(gray)
 
-    # Sobel magnitude on grayscale (then normalise to 0..255)
-    gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=SOBEL_KSIZE) # (H,W), float32
-    gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=SOBEL_KSIZE) # (H,W), float32
-    mag = np.sqrt(gx * gx + gy * gy) # (H,W), float32
-
-    # Normalize Sobel magnitude to 0..255
+    gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=SOBEL_KSIZE)
+    gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=SOBEL_KSIZE)
+    mag = np.sqrt(gx * gx + gy * gy)
     maxv = float(mag.max()) if mag.size else 0.0
     if maxv > 0:
         mag = (mag / maxv) * 255.0
-    sobel_mag = np.clip(mag, 0, 255).astype(np.uint8)   # (H,W), uint8
+    sobel_mag = np.clip(mag, 0, 255).astype(np.uint8)
 
-    # Stack channels: RGB + CLAHE + Sobel => (H,W,5)
     stack = np.dstack([rgb, clahe_gray[..., None], sobel_mag[..., None]]).astype(np.uint8)
     return stack, clahe_gray, sobel_mag
 
-# Process each image, create stack, and save
+
 for img_path in img_files:
+    result = process_image(img_path)
+    if result is None:
+        continue
+    stack, clahe_gray, sobel_mag = result
     base_name = img_path.stem
 
-    # Read image (OpenCV loads BGR)
-    bgr = cv2.imread(str(img_path), cv2.IMREAD_COLOR)
-    if bgr is None:
-        print(f"[SKIP] Could not read image: {img_path.name}")
-        continue
-
-    # Convert to RGB, grayscale and HSV
-    rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)          # (H,W,3), uint8
-    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)        # (H,W), uint8
-    
-    # clahe on grayscale
-    clahe_gray = clahe.apply(gray) # (H,W), uint8
-
-    # Sobel magnitude on grayscale (then normalise to 0..255)
-    gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=SOBEL_KSIZE) # (H,W), float32
-    gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=SOBEL_KSIZE) # (H,W), float32
-    mag = np.sqrt(gx * gx + gy * gy) # (H,W), float32
-
-    # Normalize Sobel magnitude to 0..255
-    maxv = float(mag.max()) if mag.size else 0.0
-    if maxv > 0:
-        mag = (mag / maxv) * 255.0
-    sobel_mag = np.clip(mag, 0, 255).astype(np.uint8)   # (H,W), uint8
-
-    # Stack channels: RGB + CLAHE + Sobel => (H,W,5)
-    stack = np.dstack([rgb, clahe_gray[..., None], sobel_mag[..., None]]).astype(np.uint8)
-
-    # Save as .npy
-    out_path = out_stack_dir / f"{base_name}_stack.npy"
-    np.save(out_path, stack)
-
-    # Save CLAHE as PNG
-    clahe_path = out_stack_dir / f"{base_name}_clahe.png"
-    cv2.imwrite(str(clahe_path), clahe_gray)
-
-    # Save Sobel as PNG
-    sobel_path = out_stack_dir / f"{base_name}_sobel.png"
-    cv2.imwrite(str(sobel_path), sobel_mag)
-
-    print(f"Saved stack: {out_path.name}  shape={stack.shape} dtype={stack.dtype}")
+    np.save(out_stack_dir / f"{base_name}_stack.npy", stack)
+    cv2.imwrite(str(out_stack_dir / f"{base_name}_clahe.png"), clahe_gray)
+    cv2.imwrite(str(out_stack_dir / f"{base_name}_sobel.png"), sobel_mag)
+    print(f"Saved stack: {base_name}_stack.npy  shape={stack.shape} dtype={stack.dtype}")
 
 print(f"\n[DONE] Wrote stacks to: {out_stack_dir}")
 

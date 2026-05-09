@@ -53,58 +53,6 @@ HALF_CROP = CROP_SIZE // 2
 
 mask_files = [f for f in os.listdir(mask_dir) if f.lower().endswith(".png")]
 
-def crop(mask_file, mask_dir,img_dir):
-    
-    base_name = os.path.splitext(mask_file)[0]
-    mask_path = os.path.join(mask_dir, mask_file)
-    img_path = os.path.join(img_dir, base_name + ".jpg")
-    if not os.path.exists(img_path):
-        print(f"Image not found for mask: {mask_file}")
-        return None, None
-
-    # Load mask and image
-    mask = Image.open(mask_path).convert("L") #ensure mask is in grayscale
-    img = Image.open(img_path) #assume RGB, not relevant for cropping
-
-    mask_np = np.array(mask)
-    nonzero = np.argwhere(mask_np > 0) # basing it on the disc mask therefore nonzero pixels
-    if nonzero.size == 0:
-        print(f"No non-zero pixels in mask: {mask_file}")
-        return None, None
-
-    #find center
-    centre_y = int(np.round(nonzero[:, 0].mean()))
-    centre_x = int(np.round(nonzero[:, 1].mean()))
-
-    left = centre_x - HALF_CROP
-    top = centre_y - HALF_CROP
-    right = centre_x + HALF_CROP
-    bottom = centre_y + HALF_CROP
-
-    # Apply jitter
-    random_jitter = np.random.randint(-JITTER, JITTER)
-
-    left += random_jitter
-    right += random_jitter
-    top += random_jitter
-    bottom += random_jitter
-
-    #Warning message if crop goes out of bounds
-    if left < 0 or top < 0 or right > img.width or bottom > img.height:
-        print(f"Warning: Crop for {mask_file} goes out of image bounds after jitter. Adjusting to fit within image.")
-    # Ensure crop box is within image bounds
-    width, height = img.size
-    left = max(left, 0)
-    top = max(top, 0)
-    right = min(right, width)
-    bottom = min(bottom, height)
-
-    # Crop and save images and masks
-    img_cropped = img.crop((left, top, right, bottom))
-    mask_cropped = mask.crop((left, top, right, bottom))
-    return img_cropped, mask_cropped
-
-  
 
 for mask_file in mask_files:
     base_name = os.path.splitext(mask_file)[0]
