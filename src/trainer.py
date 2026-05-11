@@ -1,6 +1,8 @@
 
 # Imports -----------------------------------------------------
 import argparse
+import os
+import random
 import tensorflow as tf
 import numpy as np
 from pathlib import Path
@@ -9,6 +11,14 @@ import pandas as pd
 # Custom modules
 import metrics
 from model import build_UNET
+
+# Reproducibility -----------------------------------------------------
+SEED = 42
+os.environ["PYTHONHASHSEED"] = str(SEED)
+random.seed(SEED)
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+os.environ["TF_DETERMINISTIC_OPS"] = "1"
 
 
 # Target selection -----------------------------------------------------
