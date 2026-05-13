@@ -98,10 +98,21 @@ for mask_file in mask_files:
         print(f"Warning: Crop for {mask_file} goes out of image bounds after jitter. Adjusting to fit within image.")
     # Ensure crop box is within image bounds
     width, height = img.size
-    left = max(left, 0)
-    top = max(top, 0)
-    right = min(right, width)
-    bottom = min(bottom, height)
+    if left < 0:
+        right -= left   # shift right (expands right = OK, left fixed next)
+        left = 0
+    if right > width:
+        left -= (right - width)   # shift left
+        right = width
+    if top < 0:
+        bottom -= top   # shift down
+        top = 0
+    if bottom > height:
+        top -= (bottom - height)  # shift up
+        bottom = height
+    # safety clamp (only triggers if image < CROP_SIZE on that axis)
+    left, top = max(left, 0), max(top, 0)
+    right, bottom = min(right, width), min(bottom, height)
 
     # Crop and save images and masks
     img_cropped = img.crop((left, top, right, bottom))
