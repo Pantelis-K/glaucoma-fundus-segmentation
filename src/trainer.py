@@ -11,9 +11,9 @@ import pandas as pd
 # Custom modules
 import metrics
 from model import build_UNET
+from config import IMAGE_SIZE, N_CHANNELS, CUP_VALUE, SEED, DATA_DIR, RUNS_DIR, STACKS_DIR, MASKS_DIR
 
 # Reproducibility -----------------------------------------------------
-SEED = 42
 os.environ["PYTHONHASHSEED"] = str(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
@@ -37,22 +37,11 @@ def _parse_target() -> str:
 cup_or_disc = _parse_target()
 
 # Config -----------------------------------------------------
-IMAGE_SIZE   = 256           
-N_CHANNELS   = 5            # R, G, B, CLAHE‑gray, Sobel
-BATCH_SIZE   = 4
-AUTOTUNE     = tf.data.AUTOTUNE
-CUP_VALUE = 2 # pixel value for cup in mask
+BATCH_SIZE     = 4
+AUTOTUNE       = tf.data.AUTOTUNE
 EPOCHS_TO_SAVE = [1, 20, 50, 100]
 
 #Directories -----------------------------------------------------
-# Resolve project root (without assuming cwd) 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-# input directories
-DATA_DIR  = PROJECT_ROOT / "data"
-STACK_DIR = DATA_DIR / "stacks"
-MASK_DIR  = DATA_DIR / "masks"
-# output directories
-RUNS_DIR = PROJECT_ROOT / "runs"
 RUNS_DIR.mkdir(exist_ok=True)
 run_name = f"{cup_or_disc}_{IMAGE_SIZE}_unet"
 run_dir = RUNS_DIR / run_name
@@ -62,8 +51,8 @@ ckpt_dir.mkdir(parents=True, exist_ok=True)
 
 
 # Load dataset paths ---------------------------------------------------
-stack_paths = [str(p) for p in sorted(STACK_DIR.glob("*_stack.npy"))]
-mask_paths  = [str(p) for p in sorted(MASK_DIR.glob("*.png"))]
+stack_paths = [str(p) for p in sorted(STACKS_DIR.glob("*_stack.npy"))]
+mask_paths  = [str(p) for p in sorted(MASKS_DIR.glob("*.png"))]
 
 assert len(stack_paths) == len(mask_paths), "Stacks / masks count mismatch!"
 print(f"{len(stack_paths)} paired samples found")

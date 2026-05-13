@@ -13,21 +13,18 @@ Output:
 These stacks are later loaded in trainer.py and normalised to [-1, 1].
 """
 # imports
-import argparse
+import sys
 from pathlib import Path
 import numpy as np
 import cv2
 
-#configs 
-CLIP_LIMIT = 2.0
-TILE_GRID = 8
-SOBEL_KSIZE = 3
+# Bootstrap: go to project root (preprocess/ -> src/ -> root), then enter src/
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from config import CLIP_LIMIT, TILE_GRID, SOBEL_KSIZE, IMAGES_DIR, STACKS_DIR
 
-# Filepaths 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-img_dir = PROJECT_ROOT / "data" / "images"
-#output directory
-out_stack_dir = PROJECT_ROOT / "data" / "stacks"
+img_dir       = IMAGES_DIR
+out_stack_dir = STACKS_DIR
 out_stack_dir.mkdir(parents=True, exist_ok=True)
 
 img_files = sorted(img_dir.glob("*.png"))

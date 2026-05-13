@@ -30,19 +30,22 @@ therefore suitable for real-world deployment.
 
 #imports
 import os
+import sys
 from pathlib import Path
 import numpy as np
 from PIL import Image
 
+# Bootstrap: go to project root (preprocess/ -> src/ -> root), then enter src/
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from config import ORIGA_DIR, IMAGES_DIR, MASKS_DIR
 
 #filepath config
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-#source directories
-img_dir = PROJECT_ROOT / "data" / "ORIGA" / "images"
-mask_dir = PROJECT_ROOT / "data" / "ORIGA" / "masks"
+img_dir  = ORIGA_DIR / "images"
+mask_dir = ORIGA_DIR / "masks"
 #output directories
-output_img_dir = PROJECT_ROOT / "data" / "images"
-output_mask_dir = PROJECT_ROOT / "data" / "masks"
+output_img_dir  = IMAGES_DIR
+output_mask_dir = MASKS_DIR
 os.makedirs(output_img_dir, exist_ok=True)
 os.makedirs(output_mask_dir, exist_ok=True)
 
