@@ -127,10 +127,29 @@ Running without `--target` will prompt interactively.
 
 | File | Description |
 |---|---|
-| `checkpoints/best.h5` | Best weights by validation DICE |
+| `best.h5` | Best weights by validation DICE |
 | `checkpoints/epoch{N}.h5` | Periodic checkpoints at configured epochs |
 | `training_history.csv` | Per-epoch metrics |
 | `training_curves.png` | Loss and DICE plots |
+
+### 3. Evaluate
+
+After training both models, run the evaluation script to compute test-set metrics
+and save result plots to `analysis/results/`:
+
+```bash
+python analysis/evaluate.py
+```
+
+### 4. Inference
+
+Run inference on a single sample by ID:
+
+```bash
+python src/inference.py --id 625
+```
+
+Running without `--id` will prompt interactively.
 
 ## Notes
 
