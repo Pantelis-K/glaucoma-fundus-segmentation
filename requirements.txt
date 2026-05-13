@@ -10,3 +10,4 @@ Pillow
 ipykernel
 ipywidgets
 jupyter
+pytest
