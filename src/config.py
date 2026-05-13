@@ -46,3 +46,5 @@ SEED = 42
 CLIP_LIMIT  = 2.0  # CLAHE clip limit
 TILE_GRID   = 8    # CLAHE tile grid size
 SOBEL_KSIZE = 3    # Sobel kernel size
+CROP_SIZE   = 640  # square ROI crop size in pixels (jitter_crop_ROI.py)
+JITTER      = 50   # max random pixel offset applied to the crop centre

@@ -38,7 +38,9 @@ from PIL import Image
 # Bootstrap: go to project root (preprocess/ -> src/ -> root), then enter src/
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_PROJECT_ROOT / "src"))
-from config import ORIGA_DIR, IMAGES_DIR, MASKS_DIR
+from config import ORIGA_DIR, IMAGES_DIR, MASKS_DIR, SEED, CROP_SIZE, JITTER
+
+np.random.seed(SEED)
 
 #filepath config
 img_dir  = ORIGA_DIR / "images"
@@ -50,11 +52,9 @@ os.makedirs(output_img_dir, exist_ok=True)
 os.makedirs(output_mask_dir, exist_ok=True)
 
 #cropping parameters
-JITTER = 50
-CROP_SIZE = 640 # Square crop size in pixels (suitable for ROI crop the ORIGA dataset based on exploratory analysis)
 HALF_CROP = CROP_SIZE // 2
 
-mask_files = [f for f in os.listdir(mask_dir) if f.lower().endswith(".png")]
+mask_files = sorted(f for f in os.listdir(mask_dir) if f.lower().endswith(".png"))
 
 
 for mask_file in mask_files:
@@ -84,13 +84,14 @@ for mask_file in mask_files:
     right = centre_x + HALF_CROP
     bottom = centre_y + HALF_CROP
 
-    # Apply jitter
-    random_jitter = np.random.randint(-JITTER, JITTER)
+    # Apply independent horizontal and vertical jitter
+    jitter_x = np.random.randint(-JITTER, JITTER)
+    jitter_y = np.random.randint(-JITTER, JITTER)
 
-    left += random_jitter
-    right += random_jitter
-    top += random_jitter
-    bottom += random_jitter
+    left   += jitter_x
+    right  += jitter_x
+    top    += jitter_y
+    bottom += jitter_y
 
     #Warning message if crop goes out of bounds
     if left < 0 or top < 0 or right > img.width or bottom > img.height:

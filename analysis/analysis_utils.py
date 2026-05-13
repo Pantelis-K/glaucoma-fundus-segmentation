@@ -446,7 +446,7 @@ def build_rf_pipeline():
     return make_pipeline(
         SimpleImputer(strategy="median"),
         SelectFromModel(RandomForestClassifier(n_estimators=500, random_state=42), threshold="median"),
-        RandomForestClassifier(n_estimators=300, random_state=0),
+        RandomForestClassifier(n_estimators=300, random_state=42),
     )
 
 
@@ -460,7 +460,7 @@ def build_lr_pipeline():
     return make_pipeline(
         SimpleImputer(strategy="median"),
         StandardScaler(),
-        LogisticRegression(penalty="l1", C=0.3, solver="saga", max_iter=4000),
+        LogisticRegression(penalty="l1", C=0.3, solver="saga", max_iter=4000, random_state=42),
     )
 
 
